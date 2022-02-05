@@ -95,12 +95,15 @@ class TruffleConfig {
     const current = this.normalize(this);
     const normalized = this.normalize(obj);
 
+    //Order matters because an object can overshadow its prototype
     const newConfig = Object.assign(
       Object.create(TruffleConfig.prototype),
-      current,
+      //first grab the prototypes
       Object.getPrototypeOf(current),
-      normalized,
-      Object.getPrototypeOf(normalized)
+      Object.getPrototypeOf(normalized),
+      //then get the instance values
+      current,
+      normalized
     );
 
     this.events.updateSubscriberOptions(newConfig);
